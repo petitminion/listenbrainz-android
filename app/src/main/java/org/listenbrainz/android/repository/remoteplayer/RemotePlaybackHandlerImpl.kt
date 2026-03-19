@@ -95,7 +95,7 @@ class RemotePlaybackHandlerImpl(
                 
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = trackUri
-                intent.setPackage(Constants.YOUTUBE_MUSIC_PACKAGE_NAME)
+                // intent.setPackage(Constants.YOUTUBE_MUSIC_PACKAGE_NAME)
                 
                 val activities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     appContext.packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
