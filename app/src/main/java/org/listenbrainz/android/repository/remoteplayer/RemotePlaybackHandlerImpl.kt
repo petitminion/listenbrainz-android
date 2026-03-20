@@ -92,11 +92,9 @@ class RemotePlaybackHandlerImpl(
             Resource.Status.SUCCESS -> {
                 // Play the track in the YouTube Music app
                 val trackUri = "https://music.youtube.com/watch?v=${result.data}".toUri()
-                
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = trackUri
-                //intent.setPackage(Constants.YOUTUBE_MUSIC_PACKAGE_NAME)
-                
+                val intent = Intent(Intent.ACTION_VIEW, trackUri).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
                 val activities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     appContext.packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
                 } else {
