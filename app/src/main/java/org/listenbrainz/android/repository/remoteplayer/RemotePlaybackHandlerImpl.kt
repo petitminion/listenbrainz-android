@@ -108,6 +108,7 @@ class RemotePlaybackHandlerImpl(
                 ResponseError.DoesNotExist("Could not find the track to play.").asResource()
             }
         }
+    }
     
     override suspend fun connectToSpotify(onError: (ResponseError) -> Unit) {
         try {
