@@ -88,51 +88,26 @@ class RemotePlaybackHandlerImpl(
         
         val result = getYoutubeMusicVideoId()
     
-        return when(result.status) {
+        return when (result.status) {
             Resource.Status.SUCCESS -> {
-                // Play the track in the YouTube Music app
+                // Play the track in YouTube Music
                 val trackUri = "https://music.youtube.com/watch?v=${result.data}".toUri()
                 val intent = Intent(Intent.ACTION_VIEW, trackUri).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
-                val activities = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    appContext.packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
-                } else {
-                    appContext.packageManager.queryIntentActivities(intent, 0)
-                }
-    
-                when {
-                    activities.isNotEmpty() -> {
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        appContext.startActivity(intent)
-                        Resource.success(Unit)
-                    }
-                    else -> {
-                        // Display an error message
-                        ResponseError.DoesNotExist("YouTube Music is not installed to play the track.").asResource()
-                    }
-                }
+        
+                // Launch the intent, letting Android handle the default app or show chooser
+                appContext.startActivity(intent)
+        
+                // Return success
+                Resource.success(Unit)
             }
-    
+        
             else -> {
-                /*
-                // Play track via Amazon Music
-                    val intent = Intent()
-                    val query = listen.trackMetadata.trackName + " " + listen.trackMetadata.artistName
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.setClassName(
-                        "com.amazon.mp3",
-                        "com.amazon.mp3.activity.IntentProxyActivity"
-                    )
-                    intent.action = MediaStore.INTENT_ACTION_MEDIA_SEARCH
-                    intent.putExtra(MediaStore.EXTRA_MEDIA_TITLE, query)
-                    context.startActivity(intent)
-                */
-                ResponseError.DoesNotExist().asResource()
+                // Could not get the video ID or something went wrong
+                ResponseError.DoesNotExist("Could not find the track to play.").asResource()
             }
         }
-    }
-    
     
     override suspend fun connectToSpotify(onError: (ResponseError) -> Unit) {
         try {
